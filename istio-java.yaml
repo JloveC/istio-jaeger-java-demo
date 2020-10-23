@@ -34,7 +34,7 @@ spec:
     spec:
       containers:
         - name: app
-          image: harbor.aigauss.com/test/service-a:v1
+          image: harbor.aigauss.com/test/service-a:v2
           env:
             - name: JAEGER_ENDPOINT
               value: http://10.0.100.33:14268/api/traces
@@ -85,7 +85,7 @@ spec:
     spec:
       containers:
         - name: app
-          image: harbor.aigauss.com/test/service-b:v1
+          image: harbor.aigauss.com/test/service-b:v2
           env:
             - name: JAEGER_ENDPOINT
               value: http://10.0.100.33:14268/api/traces
@@ -136,7 +136,7 @@ spec:
     spec:
       containers:
         - name: app
-          image: harbor.aigauss.com/test/service-c:v1
+          image: harbor.aigauss.com/test/service-c:v2
           env:
             - name: JAEGER_ENDPOINT
               value: http://10.0.100.33:14268/api/traces
