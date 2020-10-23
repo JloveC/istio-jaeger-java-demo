@@ -34,15 +34,18 @@ spec:
     spec:
       containers:
         - name: app
-          image: csantanapr/service-a-java-istio
-          #image: image-registry.openshift-image-registry.svc:5000/default/service-a-java-istio
+          image: harbor.aigauss.com/test/service-a:v1
           env:
             - name: JAEGER_ENDPOINT
-              value: http://jaeger-collector.istio-system.svc:14268/api/traces
+              value: http://10.0.100.33:14268/api/traces
             - name: JAEGER_PROPAGATION
               value: b3
             - name: SERVICE_FORMATTER
               value: service-b
+            - name: JAEGER_TRACEID_128BIT
+              value: "true"
+            - name: JAEGER_TAGS
+              value: "app=a"
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
@@ -55,7 +58,7 @@ metadata:
     app: service-b
 spec:
   ports:
-    - port: 8081
+    - port: 8080
       name: http
   selector:
     app: service-b
@@ -82,13 +85,67 @@ spec:
     spec:
       containers:
         - name: app
-          image: csantanapr/service-b-java-istio
-          #image: image-registry.openshift-image-registry.svc:5000/default/service-b-java-istio
+          image: harbor.aigauss.com/test/service-b:v1
           env:
             - name: JAEGER_ENDPOINT
-              value: http://jaeger-collector.istio-system.svc:14268/api/traces
+              value: http://10.0.100.33:14268/api/traces
             - name: JAEGER_PROPAGATION
               value: b3
+            - name: JAEGER_TRACEID_128BIT
+              value: "true"
+            - name: SERVICE_FORMATTER
+              value: service-c
+            - name: JAEGER_TAGS
+              value: "app=b"
           imagePullPolicy: Always
           ports:
-            - containerPort: 8081
+            - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-c
+  labels:
+    app: service-c
+spec:
+  ports:
+    - port: 8080
+      name: http
+  selector:
+    app: service-c
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: service-c
+  labels:
+    app: service-c
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: service-c
+  template:
+    metadata:
+      labels:
+        app: service-c
+        version: v1
+      annotations:
+        sidecar.istio.io/inject: "true"
+    spec:
+      containers:
+        - name: app
+          image: harbor.aigauss.com/test/service-c:v1
+          env:
+            - name: JAEGER_ENDPOINT
+              value: http://10.0.100.33:14268/api/traces
+            - name: JAEGER_PROPAGATION
+              value: b3
+            - name: JAEGER_TRACEID_128BIT
+              value: "true"
+            - name: JAEGER_TAGS
+              value: "app=c"
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080

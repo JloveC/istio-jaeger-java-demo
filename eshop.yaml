@@ -1,0 +1,193 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: eshop
+  labels:
+    app: eshop
+spec:
+  ports:
+    - port: 8080
+      name: http
+  selector:
+    app: eshop
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: inventory
+  labels:
+    app: inventory
+spec:
+  ports:
+    - port: 8080
+      name: http
+  selector:
+    app: inventory
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: billing
+  labels:
+    app: billing
+spec:
+  ports:
+    - port: 8080
+      name: http
+  selector:
+    app: billing
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: delivery
+  labels:
+    app: delivery
+spec:
+  ports:
+    - port: 8080
+      name: http
+  selector:
+    app: delivery
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: eshop-v1
+  labels:
+    version: v1
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: eshop
+        version: v1
+    spec:
+      containers:
+        - name: eshop
+          image: zhaohuabing/istio-opentracing-demo:opentracing
+          ports:
+            - containerPort: 8080
+          env:
+            - name: JAEGER_ENDPOINT
+              value: http://10.0.100.33:14268/api/traces
+            - name: JAEGER_PROPAGATION
+              value: "b3"
+            - name: JAEGER_TRACEID_128BIT
+              value: "true"
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: inventory-v1
+  labels:
+    version: v1
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: inventory
+        version: v1
+    spec:
+      containers:
+        - name: inventory
+          image: zhaohuabing/istio-opentracing-demo:opentracing
+          ports:
+            - containerPort: 8080
+          env:
+            - name: JAEGER_ENDPOINT
+              value: http://10.0.100.33:14268/api/traces
+            - name: JAEGER_PROPAGATION
+              value: "b3"
+            - name: JAEGER_TRACEID_128BIT
+              value: "true"
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: billing-v1
+  labels:
+    version: v1
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: billing
+        version: v1
+    spec:
+      containers:
+        - name: billing
+          image: zhaohuabing/istio-opentracing-demo:opentracing
+          ports:
+            - containerPort: 8080
+          env:
+            - name: JAEGER_ENDPOINT
+              value: http://10.0.100.33:14268/api/traces
+            - name: JAEGER_PROPAGATION
+              value: "b3"
+            - name: JAEGER_TRACEID_128BIT
+              value: "true"
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: delivery-v1
+  labels:
+    version: v1
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: delivery
+        version: v1
+    spec:
+      containers:
+        - name: delivery
+          image: zhaohuabing/istio-opentracing-demo:opentracing
+          ports:
+            - containerPort: 8080
+          env:
+            - name: JAEGER_ENDPOINT
+              value: http://10.0.100.33:14268/api/traces
+            - name: JAEGER_PROPAGATION
+              value: "b3"
+            - name: JAEGER_TRACEID_128BIT
+              value: "true"
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: eshop-gateway
+spec:
+  selector:
+    istio: ingressgateway # use Istio default gateway implementation
+  servers:
+    - port:
+        number: 80
+        name: http
+        protocol: HTTP
+      hosts:
+        - "istio-test1.aigauss.com"
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: eshop
+spec:
+  hosts:
+    - "istio-test1.aigauss.com"
+  gateways:
+    - eshop-gateway
+  http:
+    - match:
+        - uri:
+            prefix: /checkout
+      route:
+        - destination:
+            port:
+              number: 8080
+            host: eshop
