@@ -30,3 +30,4 @@ build/
 
 ### VS Code ###
 .vscode/
+opentracing-specialagent-1.7.4.jar

@@ -34,18 +34,16 @@ spec:
     spec:
       containers:
         - name: app
-          image: harbor.aigauss.com/test/service-a:v2
+          image: harbor.aigauss.com/test/service-a:v3
           env:
             - name: JAEGER_ENDPOINT
-              value: http://10.0.100.33:14268/api/traces
+              value: http://jaeger-collector.istio-system.svc:14268/api/traces
             - name: JAEGER_PROPAGATION
               value: b3
-            - name: SERVICE_FORMATTER
-              value: service-b
             - name: JAEGER_TRACEID_128BIT
               value: "true"
-            - name: JAEGER_TAGS
-              value: "app=a"
+            - name: SERVICE_FORMATTER
+              value: service-b
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
@@ -85,18 +83,16 @@ spec:
     spec:
       containers:
         - name: app
-          image: harbor.aigauss.com/test/service-b:v2
+          image: harbor.aigauss.com/test/service-b
           env:
             - name: JAEGER_ENDPOINT
-              value: http://10.0.100.33:14268/api/traces
+              value: http://jaeger-collector.istio-system.svc:14268/api/traces
             - name: JAEGER_PROPAGATION
               value: b3
             - name: JAEGER_TRACEID_128BIT
               value: "true"
             - name: SERVICE_FORMATTER
               value: service-c
-            - name: JAEGER_TAGS
-              value: "app=b"
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
@@ -136,16 +132,14 @@ spec:
     spec:
       containers:
         - name: app
-          image: harbor.aigauss.com/test/service-c:v2
+          image: harbor.aigauss.com/test/service-c
           env:
             - name: JAEGER_ENDPOINT
-              value: http://10.0.100.33:14268/api/traces
+              value: http://jaeger-collector.istio-system.svc:14268/api/traces
             - name: JAEGER_PROPAGATION
               value: b3
             - name: JAEGER_TRACEID_128BIT
               value: "true"
-            - name: JAEGER_TAGS
-              value: "app=c"
           imagePullPolicy: Always
           ports:
             - containerPort: 8080

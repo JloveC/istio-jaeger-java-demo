@@ -1,0 +1,7 @@
+FROM openjdk:8-slim as runner
+ENV SPECIALAGENT=/opt/opentracing-specialagent-1.7.4.jar
+COPY opentracing-specialagent-1.7.4.jar $SPECIALAGENT
+COPY target/solution-servicec-0.0.1-SNAPSHOT.jar app.jar
+
+ENV JAVA_OPTS="-javaagent:$SPECIALAGENT -Dsa.init.defer=true "
+ENTRYPOINT [ "sh", "-c", "java $JAVA_OPTS -jar app.jar" ]
