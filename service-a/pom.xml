@@ -10,9 +10,9 @@
 		<!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.example</groupId>
-	<artifactId>solution-servicea</artifactId>
+	<artifactId>jlovec-servicea</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>solution-servicea</name>
+	<name>jlovec-servicea</name>
 	<description>Demo project for Spring Boot</description>
 
 	<properties>

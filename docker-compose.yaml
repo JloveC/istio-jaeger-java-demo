@@ -6,12 +6,16 @@ services:
     ports:
       - 8080:8080
     environment:
-      - SERVICE_FORMATTER=service-b
+      - JAVA_OPTS="-javaagent:opentracing-specialagent-1.7.4.jar -Dsa.exporter=jaeger -Dsa.log.level=INFO -Dsa.init.defer=true -DJAEGER_SERVICE_NAME=service-a"
+      - SERVICE_B_HOST=service-b
   service-b:
     image: "harbor.aigauss.com/test/service-b"
     build: ./service-b
     environment:
-      - SERVICE_FORMATTER=service-c
+      - JAVA_OPTS="-javaagent:opentracing-specialagent-1.7.4.jar -Dsa.exporter=jaeger -Dsa.log.level=INFO -Dsa.init.defer=true -DJAEGER_SERVICE_NAME=service-b"
+      - SERVICE_C_HOST=service-c
   service-c:
     image: "harbor.aigauss.com/test/service-c"
     build: ./service-c
+    environment:
+      - JAVA_OPTS="-javaagent:opentracing-specialagent-1.7.4.jar -Dsa.exporter=jaeger -Dsa.log.level=INFO -Dsa.init.defer=true -DJAEGER_SERVICE_NAME=service-c"

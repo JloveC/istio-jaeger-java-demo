@@ -1,7 +1,8 @@
-FROM openjdk:8-slim as runner
-ENV SPECIALAGENT=/opt/opentracing-specialagent-1.7.4.jar
-COPY opentracing-specialagent-1.7.4.jar $SPECIALAGENT
-COPY target/solution-servicea-0.0.1-SNAPSHOT.jar app.jar
-
-ENV JAVA_OPTS="-javaagent:$SPECIALAGENT -Dsa.init.defer=true "
+FROM openjdk:8-slim
+RUN sed -i 's,http://.*.debian.org,http://mirrors.aliyun.com,g' /etc/apt/sources.list &&\
+    apt update &&\
+    apt install -y wget &&\
+    rm -rf /var/lib/apt/lists/* &&\
+    wget -O opentracing-specialagent-1.7.4.jar "https://repo1.maven.org/maven2/io/opentracing/contrib/specialagent/opentracing-specialagent/1.7.4/opentracing-specialagent-1.7.4.jar"
+COPY target/jlovec-servicea-0.0.1-SNAPSHOT.jar app.jar
 ENTRYPOINT [ "sh", "-c", "java $JAVA_OPTS -jar app.jar" ]

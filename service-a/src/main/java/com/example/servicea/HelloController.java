@@ -15,8 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-// import io.opentracing.Span;
-// import io.opentracing.Tracer;
 
 @RestController
 public class HelloController {
@@ -24,27 +22,16 @@ public class HelloController {
     @Autowired
     private RestTemplate restTemplate;
 
-    // @Autowired
-    // private Tracer tracer;
-
     @GetMapping("/sayHello/{name}")
     public String sayHello(@PathVariable String name, @RequestHeader HttpHeaders headers) {
         System.out.println("Headers: " + headers);
-        // Span span = tracer.scopeManager().activeSpan();
         Map<String, String> fields = new LinkedHashMap<>();
-        // fields.put("event", name);
-        // fields.put("message", "this is a log message for name " + name);
-        // span.log(fields);
-        // you can also log a string instead of a map, key=event value=<stringvalue>
-        // span.log("this is a log message for name " + name);
-        // span.setBaggageItem("my-baggage", name);
         String response = formatGreetingRemote(name);
-        // span.setTag("response", response);
         return response;
     }
 
     private String formatGreetingRemote(String name) {
-        String serviceName = System.getenv("SERVICE_FORMATTER");
+        String serviceName = System.getenv("SERVICE_B_HOST");
         if (serviceName == null) {
             serviceName = "localhost";
         }

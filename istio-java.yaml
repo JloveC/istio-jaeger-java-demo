@@ -42,7 +42,9 @@ spec:
               value: b3
             - name: JAEGER_TRACEID_128BIT
               value: "true"
-            - name: SERVICE_FORMATTER
+            - name: JAVA_OPTS
+              value: -javaagent:opentracing-specialagent-1.7.4.jar -Dsa.exporter=jaeger -Dsa.log.level=INFO -Dsa.init.defer=true -DJAEGER_SERVICE_NAME=service-a
+            - name: SERVICE_B_HOST
               value: service-b
           imagePullPolicy: Always
           ports:
@@ -91,7 +93,9 @@ spec:
               value: b3
             - name: JAEGER_TRACEID_128BIT
               value: "true"
-            - name: SERVICE_FORMATTER
+            - name: JAVA_OPTS
+              value: -javaagent:opentracing-specialagent-1.7.4.jar -Dsa.exporter=jaeger -Dsa.log.level=INFO -Dsa.init.defer=true -DJAEGER_SERVICE_NAME=service-b
+            - name: SERVICE_C_HOST
               value: service-c
           imagePullPolicy: Always
           ports:
@@ -140,6 +144,8 @@ spec:
               value: b3
             - name: JAEGER_TRACEID_128BIT
               value: "true"
+            - name: JAVA_OPTS
+              value: -javaagent:opentracing-specialagent-1.7.4.jar -Dsa.exporter=jaeger -Dsa.log.level=INFO -Dsa.init.defer=true -DJAEGER_SERVICE_NAME=service-c
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
