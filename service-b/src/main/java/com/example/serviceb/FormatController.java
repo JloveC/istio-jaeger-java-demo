@@ -31,7 +31,7 @@ public class FormatController {
     }
 
     private String formatGreetingRemote(String name) {
-        String serviceName = System.getenv("SERVICE_FORMATTER");
+        String serviceName = System.getenv("SERVICE_C_HOST");
         if (serviceName == null) {
             serviceName = "localhost";
         }

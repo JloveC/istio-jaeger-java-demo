@@ -1,21 +1,21 @@
 version: "2.1"
 services:
   service-a:
-    image: "harbor.aigauss.com/test/service-a"
+    image: "jlovec/istio-jaeger-java-service-a"
     build: ./service-a
     ports:
-      - 8080:8080
+      - 18080:8080
     environment:
-      - JAVA_OPTS="-javaagent:opentracing-specialagent-1.7.4.jar -Dsa.exporter=jaeger -Dsa.log.level=INFO -Dsa.init.defer=true -DJAEGER_SERVICE_NAME=service-a"
+      - JAVA_OPTS=-javaagent:/opentracing-specialagent-1.7.4.jar -Dsa.exporter=jaeger -Dsa.log.level=INFO -Dsa.init.defer=true -DJAEGER_SERVICE_NAME=service-a
       - SERVICE_B_HOST=service-b
   service-b:
-    image: "harbor.aigauss.com/test/service-b"
+    image: "jlovec/istio-jaeger-java-service-b"
     build: ./service-b
     environment:
-      - JAVA_OPTS="-javaagent:opentracing-specialagent-1.7.4.jar -Dsa.exporter=jaeger -Dsa.log.level=INFO -Dsa.init.defer=true -DJAEGER_SERVICE_NAME=service-b"
+      - JAVA_OPTS=-javaagent:/opentracing-specialagent-1.7.4.jar -Dsa.exporter=jaeger -Dsa.log.level=INFO -Dsa.init.defer=true -DJAEGER_SERVICE_NAME=service-b
       - SERVICE_C_HOST=service-c
   service-c:
-    image: "harbor.aigauss.com/test/service-c"
+    image: "jlovec/istio-jaeger-java-service-c"
     build: ./service-c
     environment:
-      - JAVA_OPTS="-javaagent:opentracing-specialagent-1.7.4.jar -Dsa.exporter=jaeger -Dsa.log.level=INFO -Dsa.init.defer=true -DJAEGER_SERVICE_NAME=service-c"
+      - JAVA_OPTS=-javaagent:/opentracing-specialagent-1.7.4.jar -Dsa.exporter=jaeger -Dsa.log.level=INFO -Dsa.init.defer=true -DJAEGER_SERVICE_NAME=service-c
